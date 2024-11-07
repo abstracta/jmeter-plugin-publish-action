@@ -1,16 +1,16 @@
 {
-  "name": "typescript-action",
-  "description": "GitHub Actions TypeScript template",
+  "name": "jmeter-plugins-deployment",
+  "description": "GitHub for Automatic Deployment of JMeter Plugins",
   "version": "0.0.0",
   "author": "",
   "private": true,
-  "homepage": "https://github.com/actions/typescript-action",
+  "homepage": "https://github.com/baraujo25/jmeter-plugins-deployment",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/actions/typescript-action.git"
+    "url": "git+https://github.com/baraujo25/jmeter-plugins-deployment.git"
   },
   "bugs": {
-    "url": "https://github.com/actions/typescript-action/issues"
+    "url": "https://github.com/baraujo25/jmeter-plugins-deployment/issues"
   },
   "keywords": [
     "actions",
@@ -37,6 +37,9 @@
     "all": "npm run format:write && npm run lint && npm run test && npm run coverage && npm run package"
   },
   "license": "MIT",
+  "eslintConfig": {
+    "extends": "./.github/linters/.eslintrc.yml"
+  },
   "jest": {
     "preset": "ts-jest",
     "verbose": true,
