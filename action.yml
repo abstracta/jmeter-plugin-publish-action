@@ -10,15 +10,26 @@ branding:
 
 # Define your inputs here.
 inputs:
-  milliseconds:
-    description: 'Your input description here'
+  jmeter-plugins-repository:
+    description: 'Url of target jmeter-plugins repository'
     required: true
-    default: '1000'
-
-# Define your outputs here.
-outputs:
-  time:
-    description: 'Your output description here'
+    default: 'https://github.com/undera/jmeter-plugins.git'
+  forked-repository:
+    description:
+      'Your forked repository of undera/jmeter-plugins used to send PR from'
+    required: true
+  plugin-artifact-name:
+    description:
+      'Prefix of the plugin artifact name used to identify the jar from other
+      libs placed in github release'
+    required: true
+  plugin-id:
+    description: 'Registered ID for identifing the plugin in jmeter-plugins'
+    required: true
+  repo-file-path:
+    description: 'Where to look and publish the plugin'
+    required: true
+    default: 'site/dat/repo/blazemeter.json'
 
 runs:
   using: node20
