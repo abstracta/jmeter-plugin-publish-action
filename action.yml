@@ -12,7 +12,7 @@ branding:
 inputs:
   jmeter-plugins-repository:
     description: 'Url of target jmeter-plugins repository'
-    required: true
+    required: false
     default: 'https://github.com/undera/jmeter-plugins.git'
   forked-repository:
     description:
@@ -26,10 +26,14 @@ inputs:
   plugin-id:
     description: 'Registered ID for identifing the plugin in jmeter-plugins'
     required: true
-  repo-file-path:
-    description: 'Where to look and publish the plugin'
+  changes:
+    description: 'Release note line'
     required: true
-    default: 'site/dat/repo/blazemeter.json'
+  ignore-dependencies:
+    description:
+      "Prefix of dependencies separated by commas, which won't be taken into
+      consideration at jmeter-plugins release but are present in github release"
+    required: false
 
 runs:
   using: node20

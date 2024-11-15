@@ -7,6 +7,8 @@ export class Arguments {
   filePath: string
   jmeterPluginsRepository: string
   githubToken: string
+  changes: string
+  ingoreDependencies: string[]
   constructor() {
     this.forkedRepository = this.getValidatedInput('FORKED-REPOSITORY')
     this.pluginArtifactName = this.getValidatedInput('PLUGIN-ARTIFACT-NAME')
@@ -15,6 +17,8 @@ export class Arguments {
     this.jmeterPluginsRepository = this.getValidatedInput(
       'JMETER-PLUGINS-REPOSITORY'
     )
+    this.changes = this.getValidatedInput('CHANGES')
+    this.ingoreDependencies = getInput('IGNORE-DEPENDENCIES').split(',')
     this.githubToken = this.getGithubToken()
   }
 
