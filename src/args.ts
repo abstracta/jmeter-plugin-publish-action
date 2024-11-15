@@ -14,8 +14,11 @@ export class Arguments {
     this.pluginArtifactName = this.getValidatedInput('PLUGIN-ARTIFACT-NAME')
     this.pluginID = this.getValidatedInput('PLUGIN-ID')
     this.filePath = this.getValidatedInput('REPO-FILE-PATH')
-    this.jmeterPluginsRepository = this.getValidatedInput(
-      'JMETER-PLUGINS-REPOSITORY'
+    this.jmeterPluginsRepository = this.getInputOrDefault(
+      'JMETER-PLUGINS-REPOSITORY',
+      //Added default value since locally seems to not take the defaul value
+      //defined in action.yaml
+      'https://github.com/undera/jmeter-plugins.git'
     )
     this.changes = this.getValidatedInput('CHANGES')
     this.ingoreDependencies = getInput('IGNORE-DEPENDENCIES').split(',')
@@ -28,6 +31,11 @@ export class Arguments {
       throw Error(`${input} is not set in the environment or empty`)
     }
     return value
+  }
+
+  private getInputOrDefault(input: string, defaultValue: string): string {
+    const value: string = getInput(input)
+    return value == '' ? defaultValue : value
   }
 
   private getGithubToken(): string {
