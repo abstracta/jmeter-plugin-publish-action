@@ -2,7 +2,7 @@ import { Octokit } from '@octokit/rest'
 import { components } from '@octokit/openapi-types'
 
 type LatestRelease = components['schemas']['release']
-type Asset = components['schemas']['release-asset']
+export type Asset = components['schemas']['release-asset']
 
 export class GithubService {
   octokit: Octokit
@@ -34,7 +34,6 @@ export class GithubService {
       }
     )
     const latestRelease: LatestRelease = response.data
-    console.log(latestRelease)
     return latestRelease
   }
 
