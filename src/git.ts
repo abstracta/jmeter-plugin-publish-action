@@ -81,18 +81,52 @@ export class GitService {
     return `https://${token}@github.com/${ownerRepo}.git`
   }
 
-  private static extractOwnerAndRepo(repository: string): string {
-    const regex = /^https:\/\/github\.com\/([^/]+)\/([^/]+)\.git$/
-    const match: RegExpMatchArray | null = repository.match(regex)
-
-    if (match) {
-      const owner: string = match[1]
-      const repo: string = match[2]
-      return `${owner}/${repo}`
+  async checkoutReleaseBranch(version: string, repositoryName: string): Promise<string> {
+    const branchName = this.args.pluginArtifactName.toUpperCase().concat('-', version)
+    try {
+      await exec('git', ['-C', `./${repositoryName}`, 'checkout', '-b', `${branchName}`])
+      await this.updateBranchFromUpstream(repositoryName)
+    } catch (error) {
+      if (error instanceof Error) {
+        throw Error(
+          `There was an issue while checking out new branch ${branchName} in directory ${repositoryName}`,
+          error
+        )
+      }
     }
-    throw new Error(
-      `Not possible to extract owner and repostory name from [${repository}]
-      Try complying with the format: https://github/owner/repo.git`
-    )
+    return branchName
   }
+
+  private async updateBranchFromUpstream(repositoryName: string): Promise<void> {
+    try {
+      await exec('git', ['-C', `./${repositoryName}`, 'fetch', 'upstream'])
+      await exec('git', [
+        '-C',
+        `./${repositoryName}`,
+        'merge',
+        'upstream/master',
+        '--allow-unrelated-histories'
+      ])
+    } catch (error) {
+      await exec('git', ['merge', '--abort'])
+      if (error instanceof Error) {
+        throw Error('Problem while updating release branch with latest upstream changes', error)
+      }
+    }
+  }
+
+
+export function extractOwnerAndRepo(repository: string): string {
+  const regex = /^https:\/\/github\.com\/([^/]+)\/([^/]+)\.git$/
+  const match: RegExpMatchArray | null = repository.match(regex)
+
+  if (match) {
+    const owner: string = match[1]
+    const repo: string = match[2]
+    return `${owner}/${repo}`
+  }
+  throw new Error(
+    `Not possible to extract owner and repostory name from [${repository}]
+    Try complying with the format: https://github/owner/repo.git`
+  )
 }

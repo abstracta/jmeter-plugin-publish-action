@@ -27,6 +27,7 @@ export async function run(): Promise<void> {
       args.pluginID,
       version
     )
+    const releaseBranch: string = await gitHandler.checkoutReleaseBranch(version, REPOSITORY_NAME)
   } catch (error) {
     if (error instanceof Error) setFailed(error.message)
   }
