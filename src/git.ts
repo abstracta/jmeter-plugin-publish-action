@@ -129,6 +129,15 @@ export class GitService {
     }
   }
 
+  async pushChanges(branchName: string, REPOSITORY_NAME: string): Promise<void> {
+    try {
+      await exec('git', ['-C', `${REPOSITORY_NAME}`, 'push', 'origin', '-u', `${branchName}`])
+    } catch {
+      throw Error(`There was a problem while pushing changes to new branch ${branchName} in origin`)
+    }
+  }
+}
+
 export function extractOwnerAndRepo(repository: string): string {
   const regex = /^https:\/\/github\.com\/([^/]+)\/([^/]+)\.git$/
   const match: RegExpMatchArray | null = repository.match(regex)

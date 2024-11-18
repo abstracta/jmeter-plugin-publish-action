@@ -29,6 +29,7 @@ export async function run(): Promise<void> {
     )
     const releaseBranch: string = await gitHandler.checkoutReleaseBranch(version, REPOSITORY_NAME)
     await gitHandler.commitChanges(version, REPOSITORY_NAME)
+    await gitHandler.pushChanges(releaseBranch, REPOSITORY_NAME)
   } catch (error) {
     if (error instanceof Error) setFailed(error.message)
   }
