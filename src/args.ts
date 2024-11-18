@@ -5,7 +5,7 @@ export class Arguments {
   pluginArtifactName: string
   pluginID: string
   filePath: string
-  jmeterPluginsRepository: string
+  upstreamRepository: string
   githubToken: string
   changes: string
   ingoreDependencies: string[]
@@ -14,8 +14,8 @@ export class Arguments {
     this.pluginArtifactName = this.getValidatedInput('PLUGIN-ARTIFACT-NAME')
     this.pluginID = this.getValidatedInput('PLUGIN-ID')
     this.filePath = this.getValidatedInput('REPO-FILE-PATH')
-    this.jmeterPluginsRepository = this.getInputOrDefault(
-      'JMETER-PLUGINS-REPOSITORY',
+    this.upstreamRepository = this.getInputOrDefault(
+      'UPSTREAM-REPOSITORY',
       //Added default value since locally seems to not take the defaul value
       //defined in action.yaml
       'https://github.com/undera/jmeter-plugins.git'

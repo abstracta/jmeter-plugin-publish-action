@@ -15,12 +15,11 @@ export class GitService {
   }
 
   private async checkoutRepository(directory: string): Promise<void> {
-    await this.cleanDirectories(directory)
-    const authenticatedRepoUrl: string =
-      GitService.buildTokenAuthenticatedRepoURL(
-        this.args.forkedRepository,
-        this.args.githubToken
-      )
+    await this.cleanDirectory(directory)
+    const authenticatedRepoUrl: string = GitService.buildTokenAuthenticatedRepoURL(
+      this.args.forkedRepository,
+      this.args.githubToken
+    )
 
     try {
       await exec('git', ['clone', authenticatedRepoUrl, directory])
@@ -31,21 +30,13 @@ export class GitService {
     }
   }
 
-  private async cleanDirectories(directory: string): Promise<void> {
+  private async cleanDirectory(directory: string): Promise<void> {
     await exec('rm', ['-rf', directory])
   }
 
   private async configureGitUser(directory: string): Promise<void> {
-    const actor: string =
-      process.env['GITHUB_ACTOR'] || 'jmeter_plugin_deployer'
-    await exec('git', [
-      '-C',
-      `./${directory}`,
-      'config',
-      '--local',
-      'user.name',
-      actor
-    ])
+    const actor: string = process.env['GITHUB_ACTOR'] || 'jmeter_plugin_deployer'
+    await exec('git', ['-C', `./${directory}`, 'config', '--local', 'user.name', actor])
     await exec('git', [
       '-C',
       directory,
@@ -55,12 +46,12 @@ export class GitService {
       `${actor}@users.noreply.github.com`
     ])
   }
+
   private async configureGitAuth(repositoryName: string): Promise<void> {
-    const originalAuthRepoUrl: string =
-      GitService.buildTokenAuthenticatedRepoURL(
-        this.args.jmeterPluginsRepository,
-        this.args.githubToken
-      )
+    const upstreamAuthRepoUrl: string = GitService.buildTokenAuthenticatedRepoURL(
+      this.args.upstreamRepository,
+      this.args.githubToken
+    )
     const forkedAuthRepoUrl: string = GitService.buildTokenAuthenticatedRepoURL(
       this.args.forkedRepository,
       this.args.githubToken
@@ -81,15 +72,12 @@ export class GitService {
       'remote',
       'add',
       'upstream',
-      `${originalAuthRepoUrl}`
+      `${upstreamAuthRepoUrl}`
     ])
   }
 
-  private static buildTokenAuthenticatedRepoURL(
-    url: string,
-    token: string
-  ): string {
-    const ownerRepo: string = GitService.extractOwnerAndRepo(url)
+  private static buildTokenAuthenticatedRepoURL(url: string, token: string): string {
+    const ownerRepo: string = extractOwnerAndRepo(url)
     return `https://${token}@github.com/${ownerRepo}.git`
   }
 

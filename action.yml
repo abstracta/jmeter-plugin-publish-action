@@ -10,7 +10,7 @@ branding:
 
 # Define your inputs here.
 inputs:
-  jmeter-plugins-repository:
+  upstream-repository:
     description: 'Url of target jmeter-plugins repository'
     required: false
     default: 'https://github.com/undera/jmeter-plugins.git'
