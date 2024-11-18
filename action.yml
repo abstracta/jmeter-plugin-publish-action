@@ -1,6 +1,5 @@
 name: 'JMeter Plugin Deployment'
-description:
-  'Automatically deploy JMeter Plugin into JMeter Plugins Manager repository'
+description: 'Automatically deploy JMeter Plugin into JMeter Plugins Manager repository'
 author: 'Blazemeter'
 
 # Add your action's branding here. This will appear on the GitHub Marketplace.
@@ -15,13 +14,12 @@ inputs:
     required: false
     default: 'https://github.com/undera/jmeter-plugins.git'
   forked-repository:
-    description:
-      'Your forked repository of undera/jmeter-plugins used to send PR from'
+    description: 'Your forked repository of undera/jmeter-plugins used to send PR from'
     required: true
   plugin-artifact-name:
     description:
-      'Prefix of the plugin artifact name used to identify the jar from other
-      libs placed in github release'
+      'Prefix of the plugin artifact name used to identify the jar from other libs placed in github
+      release'
     required: true
   plugin-id:
     description: 'Registered ID for identifing the plugin in jmeter-plugins'
@@ -31,8 +29,8 @@ inputs:
     required: true
   ignore-dependencies:
     description:
-      "Prefix of dependencies separated by commas, which won't be taken into
-      consideration at jmeter-plugins release but are present in github release"
+      "Prefix of dependencies separated by commas, which won't be taken into consideration at
+      jmeter-plugins release but are present in github release"
     required: false
 
 runs:

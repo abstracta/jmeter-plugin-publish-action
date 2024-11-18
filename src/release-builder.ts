@@ -41,9 +41,7 @@ export class ReleaseBuilder {
     this.assets.forEach(asset => {
       if (
         !asset.name.startsWith(this.args.pluginArtifactName) &&
-        !this.args.ingoreDependencies.some(ignore =>
-          asset.name.startsWith(ignore)
-        )
+        !this.args.ingoreDependencies.some(ignore => asset.name.startsWith(ignore))
       ) {
         const { libKey, url } = this.buildLibKeyAndUrl(asset)
         libs[libKey] = url
@@ -53,9 +51,7 @@ export class ReleaseBuilder {
   }
 
   private buildLibKeyAndUrl(asset: Asset): { libKey: string; url: string } {
-    const { artifactName, version } = ReleaseBuilder.dissectArtifactName(
-      asset.name
-    )
+    const { artifactName, version } = ReleaseBuilder.dissectArtifactName(asset.name)
     const libKey = `${artifactName}>=${version}`
     const url: string = asset.browser_download_url
     return { libKey, url }
@@ -83,17 +79,14 @@ export class ReleaseBuilder {
     for (const file of files) {
       const fullPath = path.join(this.PLUGINS_REPOSITORY_FILE_PATH, file)
       if (fullPath.endsWith('.json')) {
-        const jsonData: Plugin[] =
-          await ReleaseBuilder.readPluginsFromFile(fullPath)
+        const jsonData: Plugin[] = await ReleaseBuilder.readPluginsFromFile(fullPath)
         const found = jsonData.some(plugin => plugin.id === this.args.pluginID)
         if (found) {
           return fullPath
         }
       }
     }
-    throw Error(
-      `Plugin ID=${this.args.pluginID} not found in any of [${files.join(',')}]`
-    )
+    throw Error(`Plugin ID=${this.args.pluginID} not found in any of [${files.join(',')}]`)
   }
 
   static async readPluginsFromFile(fileName: string): Promise<Plugin[]> {
@@ -108,15 +101,10 @@ export class ReleaseBuilder {
 
   async buildDependsOn(): Promise<string[]> {
     const jsonRepoFile: string = await this.findFilePluginRepository()
-    const jsonData: Plugin[] =
-      await ReleaseBuilder.readPluginsFromFile(jsonRepoFile)
-    const plugin: Plugin | undefined = jsonData.find(
-      plugin => plugin.id === this.args.pluginID
-    )
+    const jsonData: Plugin[] = await ReleaseBuilder.readPluginsFromFile(jsonRepoFile)
+    const plugin: Plugin | undefined = jsonData.find(plugin => plugin.id === this.args.pluginID)
     if (!plugin) {
-      throw Error(
-        `Plugin ID=${this.args.pluginID} not found in ${jsonRepoFile}`
-      )
+      throw Error(`Plugin ID=${this.args.pluginID} not found in ${jsonRepoFile}`)
     }
     const versions: [string, PluginVersion][] = Object.entries(plugin.versions)
     const latestVersion: PluginVersion = versions[versions.length - 1][1]
