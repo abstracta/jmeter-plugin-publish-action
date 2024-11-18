@@ -115,6 +115,19 @@ export class GitService {
     }
   }
 
+  async commitChanges(version: string, repositoryName: string): Promise<void> {
+    try {
+      const pluginName =
+        process.env.GITHUB_REPOSITORY?.split('/')[1] || this.args.pluginArtifactName
+      const commitMessage = `${pluginName} v${version} release`
+      await exec('git', ['-C', `./${repositoryName}`, 'add', '.'])
+      await exec('git', ['-C', `./${repositoryName}`, 'commit', '-m', `${commitMessage}`])
+    } catch (error) {
+      if (error instanceof Error) {
+        throw Error(`There was an issue while stagging and commiting changes`, error)
+      }
+    }
+  }
 
 export function extractOwnerAndRepo(repository: string): string {
   const regex = /^https:\/\/github\.com\/([^/]+)\/([^/]+)\.git$/
