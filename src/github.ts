@@ -1,5 +1,6 @@
 import { Octokit } from '@octokit/rest'
 import { components } from '@octokit/openapi-types'
+import { extractOwnerAndRepo } from './git.ts'
 
 type LatestRelease = components['schemas']['release']
 export type Asset = components['schemas']['release-asset']
@@ -23,16 +24,13 @@ export class GithubService {
     const owner: string = pluginRepository.split('/')[0]
     const repository: string = pluginRepository.split('/')[1]
 
-    const response = await this.octokit.request(
-      'GET /repos/{owner}/{repo}/releases/latest',
-      {
-        owner: owner,
-        repo: repository,
-        headers: {
-          'X-GitHub-Api-Version': '2022-11-28'
-        }
+    const response = await this.octokit.request('GET /repos/{owner}/{repo}/releases/latest', {
+      owner: owner,
+      repo: repository,
+      headers: {
+        'X-GitHub-Api-Version': '2022-11-28'
       }
-    )
+    })
     const latestRelease: LatestRelease = response.data
     return latestRelease
   }
@@ -59,5 +57,40 @@ export class GithubService {
       throw Error("Latest release wasn't fetched properly")
     }
     return this.latestRelease.assets
+  }
+
+  async openPullRequest(
+    upstreamUrl: string,
+    forkedUrl: string,
+    releaseBranch: string
+  ): Promise<void> {
+    const upstream = GithubService.getOwnerRepoFromUrl(upstreamUrl)
+    const forked = GithubService.getOwnerRepoFromUrl(forkedUrl)
+    const title = `${GithubService.getCurrentPluginRepository()} release v${this.getReleaseVersion()}`
+    const releaseNotes = `${this.latestRelease?.body}`
+    await this.octokit.request('POST /repos/{owner}/{repo}/pulls', {
+      owner: `${upstream.owner}`,
+      repo: `${upstream.repo}`,
+      title: `${title}`,
+      body: `${releaseNotes}`,
+      head: `${forked.owner}:${releaseBranch}`,
+      base: 'master',
+      draft: true,
+      headers: {
+        'X-GitHub-Api-Version': '2022-11-28'
+      }
+    })
+  }
+
+  private static getOwnerRepoFromUrl(url: string): {
+    owner: string
+    repo: string
+  } {
+    try {
+      const [owner, repo] = extractOwnerAndRepo(url).split('/')
+      return { owner, repo }
+    } catch {
+      throw new Error(`Url [${url}] does not match the format Eg: https://github/example/repo.git`)
+    }
   }
 }
