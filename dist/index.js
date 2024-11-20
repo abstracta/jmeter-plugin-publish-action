@@ -31213,7 +31213,7 @@ class GithubService {
         const forked = GithubService.getOwnerRepoFromUrl(forkedUrl);
         const title = `${GithubService.getCurrentPluginRepository()} release v${this.getReleaseVersion()}`;
         const releaseNotes = `${this.latestRelease?.body}`;
-        await this.octokit.request('POST /repos/{owner}/{repo}/pulls', {
+        const response = await this.octokit.request('POST /repos/{owner}/{repo}/pulls', {
             owner: `${upstream.owner}`,
             repo: `${upstream.repo}`,
             title: `${title}`,
@@ -31225,6 +31225,11 @@ class GithubService {
                 'X-GitHub-Api-Version': '2022-11-28',
             },
         });
+        const pr = response.data;
+        if (pr?.url) {
+            return response.url;
+        }
+        throw Error("Seems that the PR couldn't be created sucessfully");
     }
     static getOwnerRepoFromUrl(url) {
         try {
@@ -31362,7 +31367,8 @@ async function run() {
         const releaseBranch = await gitHandler.checkoutReleaseBranch(version, REPOSITORY_NAME);
         await gitHandler.commitChanges(version, REPOSITORY_NAME);
         await gitHandler.pushChanges(releaseBranch, REPOSITORY_NAME);
-        await githubService.openPullRequest(args.upstreamRepository, args.forkedRepository, releaseBranch);
+        const prUrl = await githubService.openPullRequest(args.upstreamRepository, args.forkedRepository, releaseBranch);
+        (0,core.setOutput)('pull_request', prUrl);
     }
     catch (error) {
         if (error instanceof Error)

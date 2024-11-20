@@ -63,3 +63,11 @@ jobs:
           plugin-id: bzm-siebel
           changes: some changes
           token: ${{ secrets.GITHUB_TOKEN }}
+        env:
+          GITHUB_REPOSITORY: 'Blazemeter/CorrelationRecorder'
+
+      - name: Print PR link
+        run: echo "${{ steps.test-action.outputs.pull_request }}"
+
+      - name: Delete PR
+        run: gh pr close ${{ steps.test-action.outputs.pull_request }} --delete-branch
