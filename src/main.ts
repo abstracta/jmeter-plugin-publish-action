@@ -1,4 +1,4 @@
-import { setFailed } from '@actions/core'
+import { setFailed, setOutput } from '@actions/core'
 import { Arguments } from './args.js'
 import { GitService } from './git.js'
 import { GithubService } from './github.js'
@@ -30,11 +30,12 @@ export async function run(): Promise<void> {
     const releaseBranch: string = await gitHandler.checkoutReleaseBranch(version, REPOSITORY_NAME)
     await gitHandler.commitChanges(version, REPOSITORY_NAME)
     await gitHandler.pushChanges(releaseBranch, REPOSITORY_NAME)
-    await githubService.openPullRequest(
+    const prUrl: string = await githubService.openPullRequest(
       args.upstreamRepository,
       args.forkedRepository,
       releaseBranch
     )
+    setOutput('pull_request', prUrl)
   } catch (error) {
     if (error instanceof Error) setFailed(error.message)
   }
