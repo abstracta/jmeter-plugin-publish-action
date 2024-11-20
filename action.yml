@@ -1,6 +1,6 @@
-name: 'JMeter Plugin Deployment'
-description: 'Automatically deploy JMeter Plugin into JMeter Plugins Manager repository'
-author: 'Blazemeter'
+name: 'JMeter Plugin Publish'
+description: 'Automatically publish JMeter Plugin into JMeter Plugins Manager repository'
+author: 'Abstracta'
 
 # Add your action's branding here. This will appear on the GitHub Marketplace.
 branding:
@@ -23,6 +23,9 @@ inputs:
     required: true
   plugin-id:
     description: 'Registered ID for identifing the plugin in jmeter-plugins'
+    required: true
+  token:
+    description: 'Github token (PAT) used to fetch assets from latest release and open the PR'
     required: true
   changes:
     description: 'Release note line'
