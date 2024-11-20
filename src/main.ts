@@ -1,8 +1,8 @@
 import { setFailed } from '@actions/core'
-import { Arguments } from './args.ts'
-import { GitService } from './git.ts'
-import { GithubService } from './github.ts'
-import { ReleaseBuilder } from './release-builder.ts'
+import { Arguments } from './args.js'
+import { GitService } from './git.js'
+import { GithubService } from './github.js'
+import { ReleaseBuilder } from './release-builder.js'
 import type { Plugin, PluginVersion } from './jmeter-plugins.d.ts'
 import { writeFileSync } from 'fs'
 

@@ -1,6 +1,6 @@
 import { Octokit } from '@octokit/rest'
 import { components } from '@octokit/openapi-types'
-import { extractOwnerAndRepo } from './git.ts'
+import { extractOwnerAndRepo } from './git.js'
 
 type LatestRelease = components['schemas']['release']
 export type Asset = components['schemas']['release-asset']
@@ -28,8 +28,8 @@ export class GithubService {
       owner: owner,
       repo: repository,
       headers: {
-        'X-GitHub-Api-Version': '2022-11-28'
-      }
+        'X-GitHub-Api-Version': '2022-11-28',
+      },
     })
     const latestRelease: LatestRelease = response.data
     return latestRelease
@@ -77,8 +77,8 @@ export class GithubService {
       base: 'master',
       draft: true,
       headers: {
-        'X-GitHub-Api-Version': '2022-11-28'
-      }
+        'X-GitHub-Api-Version': '2022-11-28',
+      },
     })
   }
 

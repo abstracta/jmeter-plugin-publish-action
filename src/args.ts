@@ -4,24 +4,22 @@ export class Arguments {
   forkedRepository: string
   pluginArtifactName: string
   pluginID: string
-  filePath: string
   upstreamRepository: string
   githubToken: string
   changes: string
   ingoreDependencies: string[]
   constructor() {
-    this.forkedRepository = this.getValidatedInput('FORKED-REPOSITORY')
-    this.pluginArtifactName = this.getValidatedInput('PLUGIN-ARTIFACT-NAME')
-    this.pluginID = this.getValidatedInput('PLUGIN-ID')
-    this.filePath = this.getValidatedInput('REPO-FILE-PATH')
+    this.forkedRepository = this.getValidatedInput('forked-repository')
+    this.pluginArtifactName = this.getValidatedInput('plugin-artifact-name')
+    this.pluginID = this.getValidatedInput('plugin-id')
     this.upstreamRepository = this.getInputOrDefault(
-      'UPSTREAM-REPOSITORY',
+      'upstream-repository',
       //Added default value since locally seems to not take the defaul value
       //defined in action.yaml
       'https://github.com/undera/jmeter-plugins.git'
     )
-    this.changes = this.getValidatedInput('CHANGES')
-    this.ingoreDependencies = getInput('IGNORE-DEPENDENCIES').split(',')
+    this.changes = this.getValidatedInput('changes')
+    this.ingoreDependencies = getInput('ignore-dependencies').split(',')
     this.githubToken = this.getGithubToken()
   }
 
@@ -39,10 +37,14 @@ export class Arguments {
   }
 
   private getGithubToken(): string {
-    const githubToken: string | undefined = process.env.GITHUB_TOKEN
-    if (githubToken) {
-      return githubToken
+    const githubToken = process.env.GITHUB_TOKEN || getInput('token')
+
+    if (!githubToken) {
+      throw new Error(
+        'GITHUB_TOKEN is not available. Please set it as an environment variable or provide it via the input "token".'
+      )
     }
-    throw Error('GITHUB_TOKEN is not available in the environment')
+
+    return githubToken
   }
 }

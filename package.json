@@ -41,10 +41,24 @@
     "extends": "./.github/linters/.eslintrc.yml"
   },
   "jest": {
-    "preset": "ts-jest",
+    "preset": "ts-jest/presets/default-esm",
     "verbose": true,
     "clearMocks": true,
     "testEnvironment": "node",
+    "extensionsToTreatAsEsm": [
+      ".ts"
+    ],
+    "transformIgnorePatterns": [
+      "/node_modules/(?!(\\@octokit/rest|\\@octokit/core)/)"
+    ],
+    "moduleNameMapper": {
+      "^(\\.{1,2}/.*)\\.js$": "$1"
+    },
+    "globals": {
+      "ts-jest": {
+        "useESM": true
+      }
+    },
     "moduleFileExtensions": [
       "js",
       "ts"
@@ -69,6 +83,12 @@
       "./src/**"
     ]
   },
+  "ncc": {
+    "compilerOptions": {
+      "allowImportingTsExtensions": true,
+      "noEmit": true
+    }
+  },
   "dependencies": {
     "@actions/core": "^1.11.1",
     "@actions/github": "^6.0.0",
@@ -81,7 +101,7 @@
     "@types/node": "^22.8.7",
     "@typescript-eslint/eslint-plugin": "^8.12.2",
     "@typescript-eslint/parser": "^8.12.2",
-    "@vercel/ncc": "^0.38.2",
+    "@vercel/ncc": "^0.38.3",
     "eslint": "^8.57.0",
     "eslint-plugin-jest": "^28.8.3",
     "eslint-plugin-jsonc": "^2.16.0",

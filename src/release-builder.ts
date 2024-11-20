@@ -1,4 +1,4 @@
-import { Arguments } from './args.ts'
+import { Arguments } from './args.js'
 import path from 'path'
 import { readdir, readFile } from 'fs/promises'
 import type { Plugin, PluginVersion } from './jmeter-plugins.d.ts'
@@ -18,7 +18,7 @@ export class ReleaseBuilder {
       changes: `${this.args.changes}`,
       downloadUrl: this.getPluginDownloadUrl(),
       libs: this.buildLibs(),
-      depends: await this.buildDependsOn()
+      depends: await this.buildDependsOn(),
     }
     return newPluginVersion
   }

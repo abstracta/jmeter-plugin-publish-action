@@ -1,5 +1,5 @@
 import { exec } from '@actions/exec'
-import { Arguments } from './args.ts'
+import { Arguments } from './args.js'
 
 export class GitService {
   private args: Arguments
@@ -43,7 +43,7 @@ export class GitService {
       'config',
       '--local',
       'user.email',
-      `${actor}@users.noreply.github.com`
+      `${actor}@users.noreply.github.com`,
     ])
   }
 
@@ -63,7 +63,7 @@ export class GitService {
       'remote',
       'set-url',
       'origin',
-      `${forkedAuthRepoUrl}`
+      `${forkedAuthRepoUrl}`,
     ])
 
     await exec('git', [
@@ -72,7 +72,7 @@ export class GitService {
       'remote',
       'add',
       'upstream',
-      `${upstreamAuthRepoUrl}`
+      `${upstreamAuthRepoUrl}`,
     ])
   }
 
@@ -85,7 +85,6 @@ export class GitService {
     const branchName = this.args.pluginArtifactName.toUpperCase().concat('-', version)
     try {
       await exec('git', ['-C', `./${repositoryName}`, 'checkout', '-b', `${branchName}`])
-      await this.updateBranchFromUpstream(repositoryName)
     } catch (error) {
       if (error instanceof Error) {
         throw Error(
@@ -94,6 +93,7 @@ export class GitService {
         )
       }
     }
+    await this.updateBranchFromUpstream(repositoryName)
     return branchName
   }
 
@@ -105,7 +105,7 @@ export class GitService {
         `./${repositoryName}`,
         'merge',
         'upstream/master',
-        '--allow-unrelated-histories'
+        '--allow-unrelated-histories',
       ])
     } catch (error) {
       await exec('git', ['merge', '--abort'])
