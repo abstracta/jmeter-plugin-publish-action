@@ -57,8 +57,9 @@ jobs:
         id: test-action
         uses: ./
         with:
-          milliseconds: 2000
-
-      - name: Print Output
-        id: output
-        run: echo "${{ steps.test-action.outputs.time }}"
+          upstream-repository: https://github.com/Abstracta/jmeter-plugins.git
+          forked-repository: https://github.com/Abstracta/jmeter-plugins.git
+          plugin-artifact-name: prefix-of-example-plugin-name
+          plugin-id: example-plugin-id
+          changes: some changes
+          token: ${{ secrets.GITHUB_TOKEN }}
