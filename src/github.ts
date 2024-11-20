@@ -37,7 +37,8 @@ export class GithubService {
   }
 
   private static getCurrentPluginRepository(): string {
-    const pluginRepository: string | undefined = process.env.GITHUB_REPOSITORY
+    const pluginRepository: string | undefined =
+      process.env.TEST_GITHUB_REPOSITORY || process.env.GITHUB_REPOSITORY
     if (pluginRepository) {
       return pluginRepository
     }

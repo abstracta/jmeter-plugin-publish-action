@@ -31188,7 +31188,7 @@ class GithubService {
         return latestRelease;
     }
     static getCurrentPluginRepository() {
-        const pluginRepository = process.env.GITHUB_REPOSITORY;
+        const pluginRepository = process.env.TEST_GITHUB_REPOSITORY || process.env.GITHUB_REPOSITORY;
         if (pluginRepository) {
             return pluginRepository;
         }

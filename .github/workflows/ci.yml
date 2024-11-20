@@ -64,7 +64,7 @@ jobs:
           changes: some changes
           token: ${{ secrets.GITHUB_TOKEN }}
         env:
-          GITHUB_REPOSITORY: 'Blazemeter/CorrelationRecorder'
+          TEST_GITHUB_REPOSITORY: 'Blazemeter/CorrelationRecorder'
 
       - name: Print PR link
         run: echo "${{ steps.test-action.outputs.pull_request }}"
