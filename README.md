@@ -1,9 +1,10 @@
 # Publish JMeter Plugin Action
 
 This GitHub Action automates the process of publishing a plugin to the
-[JMeter Plugins Manager repository](https://github.com/undera/jmeter-plugins). It generates the
-required metadata from the latest GitHub release of your plugin and creates a pull request to the
-target repository.
+[JMeter Plugins Manager repository](https://github.com/undera/jmeter-plugins).
+
+It generates the required metadata from the latest GitHub release of your plugin and creates a pull
+request to the target repository.
 
 ## Features
 
@@ -18,13 +19,13 @@ The action requires the following inputs:
 
 | Input                  | Description                                                                                              | Required | Default                                        |
 | ---------------------- | -------------------------------------------------------------------------------------------------------- | -------- | ---------------------------------------------- |
-| `upstream-repository`  | URL of the target JMeter Plugins repository to send the PR to.                                           | No       | `https://github.com/undera/jmeter-plugins.git` |
+| `token`                | GitHub token used for authentication to perform API operations such as fetching assets and creating PRs. | Yes      | -                                              |
 | `forked-repository`    | URL of your forked repository used to send the PR from.                                                  | Yes      | -                                              |
-| `plugin-artifact-name` | Prefix of the plugin artifact name used to identify the JAR file in the GitHub release.                  | Yes      | -                                              |
 | `plugin-id`            | Registered ID for identifying the plugin in the JMeter Plugins repository.                               | Yes      | -                                              |
+| `plugin-artifact-name` | Prefix of the plugin artifact name used to identify the JAR file in the GitHub release.                  | Yes      | -                                              |
 | `changes`              | Release note line describing the update.                                                                 | Yes      | -                                              |
 | `ignore-dependencies`  | Comma-separated prefixes of dependencies to ignore in the release metadata.                              | No       | -                                              |
-| `token`                | GitHub token used for authentication to perform API operations such as fetching assets and creating PRs. | Yes      | -                                              |
+| `upstream-repository`  | URL of the target JMeter Plugins repository to send the PR to.                                           | No       | `https://github.com/undera/jmeter-plugins.git` |
 
 ## Usage
 
@@ -56,13 +57,13 @@ jobs:
 
 ## How It Works
 
-1. _Input Validation_: The action ensures all required inputs are provided.
-1. _Repository Setup_: It checks out the forked repository and configures upstream and origin
+1. **Input Validation**: The action ensures all required inputs are provided.
+1. **Repository Setup**: It checks out the forked repository and configures upstream and origin
    remotes.
-1. _Metadata Generation_: Extracts version and library details from the latest GitHub release of the
-   plugin.
-1. _Update_: Locates the correct section using plugin-id and appends the new release details.
-1. _Branching and PR_: Creates a new release branch, commits the changes, and pushes the branch to
+1. **Metadata Generation**: Extracts version and library details from the latest GitHub release of
+   the plugin.
+1. **Update**: Locates the correct section using plugin-id and appends the new release details.
+1. **Branching and PR**: Creates a new release branch, commits the changes, and pushes the branch to
    the forked repository. A pull request is then created to the upstream repository using the
    `token`.
 
