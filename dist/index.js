@@ -31227,7 +31227,7 @@ class GithubService {
         });
         const pr = response.data;
         if (pr?.url) {
-            return response.url;
+            return pr.url;
         }
         throw Error("Seems that the PR couldn't be created sucessfully");
     }
