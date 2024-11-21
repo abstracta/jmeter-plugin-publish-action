@@ -83,8 +83,8 @@ export class GithubService {
       },
     })
     const pr: CreatePullRequestResponse = response.data
-    if (pr?.url) {
-      return pr.url
+    if (pr?.html_url) {
+      return pr.html_url
     }
     throw Error("Seems that the PR couldn't be created sucessfully")
   }
