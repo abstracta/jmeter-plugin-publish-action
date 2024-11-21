@@ -36,6 +36,9 @@ inputs:
       jmeter-plugins release but are present in github release"
     required: false
 
+outputs:
+  pull_request:
+    description: 'The url of the created PR for review and draft change'
 runs:
   using: node20
   main: dist/index.js
