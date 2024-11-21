@@ -1,16 +1,16 @@
 {
-  "name": "jmeter-plugins-deployment",
-  "description": "GitHub for Automatic Deployment of JMeter Plugins",
+  "name": "jmeter-plugin-publish-action",
+  "description": "GitHub Action for Automatic Publishing of JMeter Plugins in JMeter Plugins Manager",
   "version": "0.0.0",
   "author": "",
   "private": true,
-  "homepage": "https://github.com/baraujo25/jmeter-plugins-deployment",
+  "homepage": "https://github.com/Abstracta/jmeter-plugin-publish-action",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/baraujo25/jmeter-plugins-deployment.git"
+    "url": "git+https://github.com/Abstracta/jmeter-plugin-publish-action.git"
   },
   "bugs": {
-    "url": "https://github.com/baraujo25/jmeter-plugins-deployment/issues"
+    "url": "https://github.com/Abstracta/jmeter-plugin-publish-action/issues"
   },
   "keywords": [
     "actions",
@@ -26,7 +26,6 @@
   "scripts": {
     "bundle": "npm run format:write && npm run package",
     "ci-test": "npx jest",
-    "coverage": "npx make-coverage-badge --output-path ./badges/coverage.svg",
     "format:write": "npx prettier --write .",
     "format:check": "npx prettier --check .",
     "lint": "npx eslint . -c ./.github/linters/.eslintrc.yml",
@@ -34,7 +33,7 @@
     "package": "npx ncc build src/index.ts -o dist --source-map --license licenses.txt",
     "package:watch": "npm run package -- --watch",
     "test": "npx jest",
-    "all": "npm run format:write && npm run lint && npm run test && npm run coverage && npm run package"
+    "all": "npm run format:write && npm run lint && npm run test && npm run package"
   },
   "license": "MIT",
   "eslintConfig": {
@@ -82,12 +81,6 @@
     "collectCoverageFrom": [
       "./src/**"
     ]
-  },
-  "ncc": {
-    "compilerOptions": {
-      "allowImportingTsExtensions": true,
-      "noEmit": true
-    }
   },
   "dependencies": {
     "@actions/core": "^1.11.1",

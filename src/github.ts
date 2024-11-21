@@ -5,6 +5,7 @@ import { extractOwnerAndRepo } from './git.js'
 type LatestRelease = components['schemas']['release']
 export type Asset = components['schemas']['release-asset']
 
+type CreatePullRequestResponse = components['schemas']['pull-request']
 export class GithubService {
   octokit: Octokit
   latestRelease: LatestRelease | undefined
@@ -36,7 +37,8 @@ export class GithubService {
   }
 
   private static getCurrentPluginRepository(): string {
-    const pluginRepository: string | undefined = process.env.GITHUB_REPOSITORY
+    const pluginRepository: string | undefined =
+      process.env.TEST_GITHUB_REPOSITORY || process.env.GITHUB_REPOSITORY
     if (pluginRepository) {
       return pluginRepository
     }
@@ -63,12 +65,12 @@ export class GithubService {
     upstreamUrl: string,
     forkedUrl: string,
     releaseBranch: string
-  ): Promise<void> {
+  ): Promise<string> {
     const upstream = GithubService.getOwnerRepoFromUrl(upstreamUrl)
     const forked = GithubService.getOwnerRepoFromUrl(forkedUrl)
     const title = `${GithubService.getCurrentPluginRepository()} release v${this.getReleaseVersion()}`
     const releaseNotes = `${this.latestRelease?.body}`
-    await this.octokit.request('POST /repos/{owner}/{repo}/pulls', {
+    const response = await this.octokit.request('POST /repos/{owner}/{repo}/pulls', {
       owner: `${upstream.owner}`,
       repo: `${upstream.repo}`,
       title: `${title}`,
@@ -80,6 +82,11 @@ export class GithubService {
         'X-GitHub-Api-Version': '2022-11-28',
       },
     })
+    const pr: CreatePullRequestResponse = response.data
+    if (pr?.html_url) {
+      return pr.html_url
+    }
+    throw Error("Seems that the PR couldn't be created sucessfully")
   }
 
   private static getOwnerRepoFromUrl(url: string): {

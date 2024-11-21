@@ -57,8 +57,19 @@ jobs:
         id: test-action
         uses: ./
         with:
-          milliseconds: 2000
+          upstream-repository: https://github.com/Abstracta/jmeter-plugins.git
+          forked-repository: https://github.com/Abstracta/jmeter-plugins.git
+          plugin-artifact-name: jmeter-bzm-correlation-recorder
+          plugin-id: bzm-siebel
+          changes: some changes
+          token: ${{ secrets.GH_TOKEN }}
+        env:
+          TEST_GITHUB_REPOSITORY: 'Blazemeter/CorrelationRecorder'
 
-      - name: Print Output
-        id: output
-        run: echo "${{ steps.test-action.outputs.time }}"
+      - name: Print PR link
+        run: echo "${{ steps.test-action.outputs.pull_request }}"
+
+      - name: Delete PR
+        run: gh pr close ${{ steps.test-action.outputs.pull_request }} --delete-branch
+        env:
+          GH_TOKEN: ${{ secrets.GH_TOKEN }}
