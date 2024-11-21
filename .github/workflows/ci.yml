@@ -62,7 +62,7 @@ jobs:
           plugin-artifact-name: jmeter-bzm-correlation-recorder
           plugin-id: bzm-siebel
           changes: some changes
-          token: ${{ secrets.GITHUB_TOKEN }}
+          token: ${{ secrets.GH_TOKEN }}
         env:
           TEST_GITHUB_REPOSITORY: 'Blazemeter/CorrelationRecorder'
 
@@ -71,3 +71,5 @@ jobs:
 
       - name: Delete PR
         run: gh pr close ${{ steps.test-action.outputs.pull_request }} --delete-branch
+        env:
+          GH_TOKEN: ${{ secrets.GH_TOKEN }}
