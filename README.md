@@ -27,6 +27,14 @@ The action requires the following inputs:
 | `ignore-dependencies`  | Comma-separated prefixes of dependencies to ignore in the release metadata.                              | No       | -                                              |
 | `upstream-repository`  | URL of the target JMeter Plugins repository to send the PR to.                                           | No       | `https://github.com/undera/jmeter-plugins.git` |
 
+## Outputs
+
+The action throws a single output:
+
+| Output         | Description                                                      |
+| -------------- | ---------------------------------------------------------------- |
+| `pull_request` | URL of the generated Pull Request into the `upstream-repository` |
+
 ## Usage
 
 Here’s how to set up and use this action in your workflow:
@@ -46,13 +54,17 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Run Publish JMeter Plugin Action
-        uses: abstracta/publish-jmeter-plugin@v1
+        id: publish-plugin
+        uses: abstracta/jmeter-plugin-publish-action@main
         with:
           forked-repository: https://github.com/Abstracta/jmeter-plugins.git
           plugin-artifact-name: prefix-of-example-plugin-name
           plugin-id: example-plugin-id
           changes: ${{ inputs.changes }}
           token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Print Pull Request URL
+        run: echo ${{ steps.publish-plugin.outputs.pull_request }}
 ```
 
 ## How It Works
