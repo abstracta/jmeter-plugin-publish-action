@@ -1,16 +1,16 @@
 {
-  "name": "jmeter-plugins-deployment",
-  "description": "GitHub for Automatic Deployment of JMeter Plugins",
+  "name": "jmeter-plugin-publish-action",
+  "description": "GitHub Action for Automatic Publishing of JMeter Plugins in JMeter Plugins Manager",
   "version": "0.0.0",
   "author": "",
   "private": true,
-  "homepage": "https://github.com/baraujo25/jmeter-plugins-deployment",
+  "homepage": "https://github.com/Abstracta/jmeter-plugin-publish-action",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/baraujo25/jmeter-plugins-deployment.git"
+    "url": "git+https://github.com/Abstracta/jmeter-plugin-publish-action.git"
   },
   "bugs": {
-    "url": "https://github.com/baraujo25/jmeter-plugins-deployment/issues"
+    "url": "https://github.com/Abstracta/jmeter-plugin-publish-action/issues"
   },
   "keywords": [
     "actions",

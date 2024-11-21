@@ -2,12 +2,10 @@ name: 'JMeter Plugin Publish'
 description: 'Automatically publish JMeter Plugin into JMeter Plugins Manager repository'
 author: 'Abstracta'
 
-# Add your action's branding here. This will appear on the GitHub Marketplace.
 branding:
-  icon: 'heart'
+  icon: git-pull-request
   color: 'red'
 
-# Define your inputs here.
 inputs:
   upstream-repository:
     description: 'Url of target jmeter-plugins repository'
@@ -39,6 +37,7 @@ inputs:
 outputs:
   pull_request:
     description: 'The url of the created PR for review and draft change'
+
 runs:
   using: node20
   main: dist/index.js
