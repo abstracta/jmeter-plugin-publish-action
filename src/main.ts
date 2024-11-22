@@ -1,9 +1,9 @@
-import { setFailed, setOutput } from '@actions/core'
+import { info, setFailed, setOutput } from '@actions/core'
 import { Arguments } from './args.js'
 import { GitService } from './git.js'
 import { GithubService } from './github.js'
 import { ReleaseBuilder } from './release-builder.js'
-import type { Plugin, PluginVersion } from './jmeter-plugins.d.ts'
+import type { Plugin, PluginVersion } from './jmeter-plugins.d.js'
 import { writeFileSync } from 'fs'
 
 const REPOSITORY_NAME = 'jmeter-plugins'
@@ -51,6 +51,7 @@ export async function run(): Promise<void> {
     if (plugin) {
       plugin.versions[releaseVersion] = release
       writeFileSync(releaseFile, JSON.stringify(plugins, null, 2), 'utf-8')
+      info(`Release Object: ${JSON.stringify(release)}`)
       return
     }
     throw Error(`The plugin id:"${pluginID}" was not found in ${releaseFile}`)

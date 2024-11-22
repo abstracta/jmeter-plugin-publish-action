@@ -31380,6 +31380,7 @@ async function run() {
         if (plugin) {
             plugin.versions[releaseVersion] = release;
             (0,external_fs_.writeFileSync)(releaseFile, JSON.stringify(plugins, null, 2), 'utf-8');
+            (0,core.info)(`Release Object: ${JSON.stringify(release)}`);
             return;
         }
         throw Error(`The plugin id:"${pluginID}" was not found in ${releaseFile}`);

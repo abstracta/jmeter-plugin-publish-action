@@ -1,8 +1,8 @@
 import { Arguments } from './args.js'
 import path from 'path'
 import { readdir, readFile } from 'fs/promises'
-import type { Plugin, PluginVersion } from './jmeter-plugins.d.ts'
-import type { Asset } from './github.ts'
+import type { Plugin, PluginVersion } from './jmeter-plugins.d.js'
+import type { Asset } from './github.js'
 
 export class ReleaseBuilder {
   PLUGINS_REPOSITORY_FILE_PATH = 'jmeter-plugins/site/dat/repo/'
