@@ -31276,12 +31276,12 @@ class ReleaseBuilder {
     }
     buildLibs() {
         const libs = {};
-        this.assets.forEach(asset => {
-            if (!asset.name.startsWith(this.args.pluginArtifactName) &&
-                !this.args.ingoreDependencies.some(ignore => asset.name.startsWith(ignore))) {
-                const { libKey, url } = this.buildLibKeyAndUrl(asset);
-                libs[libKey] = url;
-            }
+        this.assets
+            .filter(asset => !asset.name.startsWith(this.args.pluginArtifactName))
+            .filter(asset => !this.args.ingoreDependencies.some(ignore => ignore && asset.name.startsWith(ignore)))
+            .forEach(asset => {
+            const { libKey, url } = this.buildLibKeyAndUrl(asset);
+            libs[libKey] = url;
         });
         return libs;
     }
@@ -31380,7 +31380,6 @@ async function run() {
         if (plugin) {
             plugin.versions[releaseVersion] = release;
             (0,external_fs_.writeFileSync)(releaseFile, JSON.stringify(plugins, null, 2), 'utf-8');
-            (0,core.info)(`Release Object: ${JSON.stringify(release)}`);
             return;
         }
         throw Error(`The plugin id:"${pluginID}" was not found in ${releaseFile}`);

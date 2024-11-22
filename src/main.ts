@@ -1,4 +1,4 @@
-import { info, setFailed, setOutput } from '@actions/core'
+import { setFailed, setOutput } from '@actions/core'
 import { Arguments } from './args.js'
 import { GitService } from './git.js'
 import { GithubService } from './github.js'
@@ -21,6 +21,7 @@ export async function run(): Promise<void> {
     const releaseBuilder: ReleaseBuilder = new ReleaseBuilder(args, githubService.getAssets())
     const release: PluginVersion = await releaseBuilder.build()
     const version: string = githubService.getReleaseVersion()
+
     await applyRelease(
       await releaseBuilder.findFilePluginRepository(),
       release,
@@ -51,7 +52,6 @@ export async function run(): Promise<void> {
     if (plugin) {
       plugin.versions[releaseVersion] = release
       writeFileSync(releaseFile, JSON.stringify(plugins, null, 2), 'utf-8')
-      info(`Release Object: ${JSON.stringify(release)}`)
       return
     }
     throw Error(`The plugin id:"${pluginID}" was not found in ${releaseFile}`)

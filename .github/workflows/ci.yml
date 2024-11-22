@@ -63,6 +63,7 @@ jobs:
           plugin-id: bzm-siebel
           changes: some changes
           token: ${{ secrets.GH_TOKEN }}
+          ignore-dependencies: bzm-repositories
         env:
           TEST_GITHUB_REPOSITORY: 'Blazemeter/CorrelationRecorder'
 

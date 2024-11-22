@@ -38,15 +38,16 @@ export class ReleaseBuilder {
 
   private buildLibs(): Record<string, string> {
     const libs: Record<string, string> = {}
-    this.assets.forEach(asset => {
-      if (
-        !asset.name.startsWith(this.args.pluginArtifactName) &&
-        !this.args.ingoreDependencies.some(ignore => asset.name.startsWith(ignore))
-      ) {
+    this.assets
+      .filter(asset => !asset.name.startsWith(this.args.pluginArtifactName))
+      .filter(
+        asset =>
+          !this.args.ingoreDependencies.some(ignore => ignore && asset.name.startsWith(ignore))
+      )
+      .forEach(asset => {
         const { libKey, url } = this.buildLibKeyAndUrl(asset)
         libs[libKey] = url
-      }
-    })
+      })
     return libs
   }
 
