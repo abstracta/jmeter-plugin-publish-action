@@ -85,7 +85,7 @@
   "dependencies": {
     "@actions/core": "^1.11.1",
     "@actions/github": "^6.0.0",
-    "@octokit/rest": "^21.0.2"
+    "@octokit/rest": "^21.1.0"
   },
   "devDependencies": {
     "@github/local-action": "^2.2.0",
