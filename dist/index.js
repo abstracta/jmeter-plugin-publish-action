@@ -27441,18 +27441,20 @@ class Arguments {
     upstreamRepository;
     githubToken;
     changes;
-    ingoreDependencies;
+    ignoreDependencies;
+    versionPatterns;
     constructor() {
         this.forkedRepository = this.getValidatedInput('forked-repository');
         this.pluginArtifactName = this.getValidatedInput('plugin-artifact-name');
         this.pluginID = this.getValidatedInput('plugin-id');
         this.upstreamRepository = this.getInputOrDefault('upstream-repository', 
-        //Added default value since locally seems to not take the defaul value
+        //Added default value since locally seems to not take the default value
         //defined in action.yaml
         'https://github.com/undera/jmeter-plugins.git');
         this.changes = this.getValidatedInput('changes');
-        this.ingoreDependencies = (0,core.getInput)('ignore-dependencies').split(',');
+        this.ignoreDependencies = (0,core.getInput)('ignore-dependencies').split(',');
         this.githubToken = this.getGithubToken();
+        this.versionPatterns = (0,core.getInput)('artifact-version-extraction-patterns').split('\n');
     }
     getValidatedInput(input) {
         const value = (0,core.getInput)(input);
@@ -31259,13 +31261,12 @@ class ReleaseBuilder {
         this.assets = assets;
     }
     async build() {
-        const newPluginVersion = {
+        return {
             changes: `${this.args.changes}`,
             downloadUrl: this.getPluginDownloadUrl(),
             libs: this.buildLibs(),
             depends: await this.buildDependsOn(),
         };
-        return newPluginVersion;
     }
     getPluginDownloadUrl() {
         const pluginAsset = this.assets.find(asset => asset.name.startsWith(this.args.pluginArtifactName));
@@ -31278,7 +31279,7 @@ class ReleaseBuilder {
         const libs = {};
         this.assets
             .filter(asset => !asset.name.startsWith(this.args.pluginArtifactName))
-            .filter(asset => !this.args.ingoreDependencies.some(ignore => ignore && asset.name.startsWith(ignore)))
+            .filter(asset => !this.args.ignoreDependencies.some(ignore => ignore && asset.name.startsWith(ignore)))
             .forEach(asset => {
             const { libKey, url } = this.buildLibKeyAndUrl(asset);
             libs[libKey] = url;
@@ -31286,22 +31287,41 @@ class ReleaseBuilder {
         return libs;
     }
     buildLibKeyAndUrl(asset) {
-        const { artifactName, version } = ReleaseBuilder.dissectArtifactName(asset.name);
-        const libKey = `${artifactName}>=${version}`;
+        const artifactInfo = ReleaseBuilder.extractArtifactAndVersion(asset.name, this.args.versionPatterns);
+        const libKey = `${artifactInfo.artifactName}>=${artifactInfo.version}`;
         const url = asset.browser_download_url;
         return { libKey, url };
     }
-    static dissectArtifactName(name) {
-        const baseName = name.endsWith('.jar') ? name.slice(0, -4) : name;
+    static extractArtifactAndVersion(name, regexes) {
+        const baseName = this.stripJarExtension(name);
+        for (const pattern of regexes) {
+            const version = this.extractVersion(baseName, pattern);
+            if (version && baseName.includes(version)) {
+                const artifactName = this.inferArtifactName(baseName, version);
+                return { artifactName, version };
+            }
+        }
+        return this.fallbackExtraction(baseName);
+    }
+    static stripJarExtension(name) {
+        return name.endsWith('.jar') ? name.slice(0, -4) : name;
+    }
+    static extractVersion(baseName, pattern) {
+        const regex = new RegExp(pattern);
+        const match = regex.exec(baseName);
+        return match?.[1];
+    }
+    static inferArtifactName(baseName, version) {
+        const versionIndex = baseName.indexOf(version);
+        const before = baseName.slice(0, versionIndex);
+        const after = baseName.slice(versionIndex + version.length);
+        return (before + after).replace(/[-_.]+$/, '').replace(/^[-_.]+/, '');
+    }
+    static fallbackExtraction(baseName) {
         const parts = baseName.split('-');
-        const version = parts.pop();
+        const version = parts.pop() ?? '';
         const artifactName = parts.join('-');
-        if (artifactName && version) {
-            return { artifactName, version };
-        }
-        else {
-            throw Error(`Not possible to extract version and name from ${name}`);
-        }
+        return { artifactName, version };
     }
     async findFilePluginRepository() {
         const files = await (0,promises_namespaceObject.readdir)(this.PLUGINS_REPOSITORY_FILE_PATH);
