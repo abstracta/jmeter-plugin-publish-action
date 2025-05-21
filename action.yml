@@ -33,7 +33,7 @@ inputs:
       "Prefix of dependencies separated by commas, which won't be taken into consideration at
       jmeter-plugins release but are present in github release"
     required: false
-  version-extraction-patterns:
+  artifact-version-extraction-patterns:
     description:
       'Regular expression patterns to extract the version from artifact names for unconventional
       library version patterns'
