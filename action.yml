@@ -35,8 +35,8 @@ inputs:
     required: false
   version-extraction-patterns:
     description:
-      'Regex patterns to extract the version from artifact names for unconventional library version
-      patterns'
+      'Regular expression patterns to extract the version from artifact names for unconventional
+      library version patterns'
     required: false
 
 outputs:
