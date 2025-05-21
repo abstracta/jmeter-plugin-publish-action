@@ -20,7 +20,7 @@ inputs:
       release'
     required: true
   plugin-id:
-    description: 'Registered ID for identifing the plugin in jmeter-plugins'
+    description: 'Registered ID for identifying the plugin in jmeter-plugins'
     required: true
   token:
     description: 'Github token (PAT) used to fetch assets from latest release and open the PR'
@@ -32,6 +32,11 @@ inputs:
     description:
       "Prefix of dependencies separated by commas, which won't be taken into consideration at
       jmeter-plugins release but are present in github release"
+    required: false
+  version-extraction-patterns:
+    description:
+      'Regular expression patterns to extract the version from artifact names for unconventional
+      library version patterns'
     required: false
 
 outputs:

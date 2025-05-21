@@ -46,7 +46,7 @@ describe('Arguments', () => {
     expect(args.pluginID).toBe('plugin-123')
     expect(args.upstreamRepository).toBe('upstream/repo')
     expect(args.changes).toBe('some changes')
-    expect(args.ingoreDependencies).toEqual(['dep1', 'dep2'])
+    expect(args.ignoreDependencies).toEqual(['dep1', 'dep2'])
     expect(args.githubToken).toBe('github-token')
   })
 

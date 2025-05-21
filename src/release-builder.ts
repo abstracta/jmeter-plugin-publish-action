@@ -4,23 +4,28 @@ import { readdir, readFile } from 'fs/promises'
 import type { Plugin, PluginVersion } from './jmeter-plugins.d.js'
 import type { Asset } from './github.js'
 
+declare type ArtifactInfo = {
+  artifactName: string
+  version: string
+}
+
 export class ReleaseBuilder {
   PLUGINS_REPOSITORY_FILE_PATH = 'jmeter-plugins/site/dat/repo/'
   args: Arguments
   assets: Asset[]
+
   constructor(args: Arguments, assets: Asset[]) {
     this.args = args
     this.assets = assets
   }
 
   async build(): Promise<PluginVersion> {
-    const newPluginVersion: PluginVersion = {
+    return {
       changes: `${this.args.changes}`,
       downloadUrl: this.getPluginDownloadUrl(),
       libs: this.buildLibs(),
       depends: await this.buildDependsOn(),
     }
-    return newPluginVersion
   }
 
   private getPluginDownloadUrl(): string {
@@ -42,7 +47,7 @@ export class ReleaseBuilder {
       .filter(asset => !asset.name.startsWith(this.args.pluginArtifactName))
       .filter(
         asset =>
-          !this.args.ingoreDependencies.some(ignore => ignore && asset.name.startsWith(ignore))
+          !this.args.ignoreDependencies.some(ignore => ignore && asset.name.startsWith(ignore))
       )
       .forEach(asset => {
         const { libKey, url } = this.buildLibKeyAndUrl(asset)
@@ -52,26 +57,53 @@ export class ReleaseBuilder {
   }
 
   private buildLibKeyAndUrl(asset: Asset): { libKey: string; url: string } {
-    const { artifactName, version } = ReleaseBuilder.dissectArtifactName(asset.name)
-    const libKey = `${artifactName}>=${version}`
+    const artifactInfo: ArtifactInfo = ReleaseBuilder.extractArtifactAndVersion(
+      asset.name,
+      this.args.versionPatterns
+    )
+    const libKey = `${artifactInfo.artifactName}>=${artifactInfo.version}`
     const url: string = asset.browser_download_url
     return { libKey, url }
   }
 
-  private static dissectArtifactName(name: string): {
-    artifactName: string
-    version: string
-  } {
-    const baseName = name.endsWith('.jar') ? name.slice(0, -4) : name
-    const parts = baseName.split('-')
-    const version = parts.pop()
-    const artifactName = parts.join('-')
+  private static extractArtifactAndVersion(name: string, regexes: string[]): ArtifactInfo {
+    const baseName = this.stripJarExtension(name)
 
-    if (artifactName && version) {
-      return { artifactName, version }
-    } else {
-      throw Error(`Not possible to extract version and name from ${name}`)
+    for (const pattern of regexes) {
+      const version = this.extractVersion(baseName, pattern)
+      if (version && baseName.includes(version)) {
+        const artifactName = this.inferArtifactName(baseName, version)
+        return { artifactName, version }
+      }
     }
+
+    return this.fallbackExtraction(baseName)
+  }
+
+  private static stripJarExtension(name: string): string {
+    return name.endsWith('.jar') ? name.slice(0, -4) : name
+  }
+
+  private static extractVersion(baseName: string, pattern: string): string | undefined {
+    const regex = new RegExp(pattern)
+    const match = regex.exec(baseName)
+    return match?.[1]
+  }
+
+  private static inferArtifactName(baseName: string, version: string): string {
+    const versionIndex = baseName.indexOf(version)
+
+    const before = baseName.slice(0, versionIndex)
+    const after = baseName.slice(versionIndex + version.length)
+
+    return (before + after).replace(/[-_.]+$/, '').replace(/^[-_.]+/, '')
+  }
+
+  private static fallbackExtraction(baseName: string): ArtifactInfo {
+    const parts = baseName.split('-')
+    const version = parts.pop() ?? ''
+    const artifactName = parts.join('-')
+    return { artifactName, version }
   }
 
   async findFilePluginRepository(): Promise<string> {
