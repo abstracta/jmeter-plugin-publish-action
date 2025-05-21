@@ -7,20 +7,23 @@ export class Arguments {
   upstreamRepository: string
   githubToken: string
   changes: string
-  ingoreDependencies: string[]
+  ignoreDependencies: string[]
+  versionPatterns: string[]
+
   constructor() {
     this.forkedRepository = this.getValidatedInput('forked-repository')
     this.pluginArtifactName = this.getValidatedInput('plugin-artifact-name')
     this.pluginID = this.getValidatedInput('plugin-id')
     this.upstreamRepository = this.getInputOrDefault(
       'upstream-repository',
-      //Added default value since locally seems to not take the defaul value
+      //Added default value since locally seems to not take the default value
       //defined in action.yaml
       'https://github.com/undera/jmeter-plugins.git'
     )
     this.changes = this.getValidatedInput('changes')
-    this.ingoreDependencies = getInput('ignore-dependencies').split(',')
+    this.ignoreDependencies = getInput('ignore-dependencies').split(',')
     this.githubToken = this.getGithubToken()
+    this.versionPatterns = getInput('artifact-version-extraction-patterns').split('\n')
   }
 
   private getValidatedInput(input: string): string {
