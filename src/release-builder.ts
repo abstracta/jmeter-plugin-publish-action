@@ -30,11 +30,11 @@ export class ReleaseBuilder {
 
   private getPluginDownloadUrl(): string {
     const pluginAsset: Asset | undefined = this.assets.find(asset =>
-      asset.name.startsWith(this.args.pluginArtifactName),
+      asset.name.startsWith(this.args.pluginArtifactName)
     )
     if (!pluginAsset) {
       throw Error(
-        `No plugin artifact found in latest github release assets by prefix [${this.args.pluginArtifactName}]`,
+        `No plugin artifact found in latest github release assets by prefix [${this.args.pluginArtifactName}]`
       )
     }
 
@@ -44,22 +44,22 @@ export class ReleaseBuilder {
   private buildLibs(): Record<string, string> {
     const libs: Record<string, string> = {}
     this.assets
-    .filter(asset => !asset.name.startsWith(this.args.pluginArtifactName))
-    .filter(
-      asset =>
-        !this.args.ignoreDependencies.some(ignore => ignore && asset.name.startsWith(ignore)),
-    )
-    .forEach(asset => {
-      const { libKey, url } = this.buildLibKeyAndUrl(asset)
-      libs[libKey] = url
-    })
+      .filter(asset => !asset.name.startsWith(this.args.pluginArtifactName))
+      .filter(
+        asset =>
+          !this.args.ignoreDependencies.some(ignore => ignore && asset.name.startsWith(ignore))
+      )
+      .forEach(asset => {
+        const { libKey, url } = this.buildLibKeyAndUrl(asset)
+        libs[libKey] = url
+      })
     return libs
   }
 
   private buildLibKeyAndUrl(asset: Asset): { libKey: string; url: string } {
     const artifactInfo: ArtifactInfo = ReleaseBuilder.extractArtifactAndVersion(
       asset.name,
-      this.args.versionPatterns,
+      this.args.versionPatterns
     )
     const libKey = `${artifactInfo.artifactName}>=${artifactInfo.version}`
     const url: string = asset.browser_download_url

@@ -18,7 +18,7 @@ request to the target repository.
 The action requires the following inputs:
 
 | Input                                  | Description                                                                                                                                                                                                   | Required | Default                                        |
-|----------------------------------------|---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|----------|------------------------------------------------|
+| -------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------- | ---------------------------------------------- |
 | `token`                                | GitHub token used for authentication to perform API operations such as fetching assets and creating PRs.                                                                                                      | Yes      | -                                              |
 | `forked-repository`                    | URL of your forked repository used to send the PR from.                                                                                                                                                       | Yes      | -                                              |
 | `plugin-id`                            | Registered ID for identifying the plugin in the JMeter Plugins repository.                                                                                                                                    | Yes      | -                                              |
@@ -33,7 +33,7 @@ The action requires the following inputs:
 The action throws a single output:
 
 | Output         | Description                                                      |
-|----------------|------------------------------------------------------------------|
+| -------------- | ---------------------------------------------------------------- |
 | `pull_request` | URL of the generated Pull Request into the `upstream-repository` |
 
 ## Usage
@@ -70,8 +70,6 @@ jobs:
         run: echo ${{ steps.publish-plugin.outputs.pull_request }}
 ```
 
->
-
 ## How It Works
 
 1. **Input Validation**: The action ensures all required inputs are provided.
@@ -94,7 +92,7 @@ jobs:
   with sufficient permissions for repository and PR actions.
 - Customize ignore-dependencies if some libraries should not be included in the release metadata.
 - Field `"depends"` of the release JSON object is grabbed from the latest release.
-    - Desire of updates requires a manual modification over the PR
+  - Desire of updates requires a manual modification over the PR
 
 ### In depth
 
@@ -125,8 +123,8 @@ The property configuration for above scenario will be:
 
 In that way the resultant release will be:
 
- ```json
- {
+```json
+{
   "1.0.1": {
     "changes": "A new release",
     "downloadUrl": "https://example.com/your-plugin.jar",
