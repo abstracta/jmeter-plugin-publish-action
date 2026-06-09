@@ -31362,7 +31362,45 @@ class ReleaseBuilder {
 
 // EXTERNAL MODULE: external "fs"
 var external_fs_ = __nccwpck_require__(9896);
+;// CONCATENATED MODULE: ./src/repo-json-format.ts
+
+
+
+function canonicalJson(content) {
+    return JSON.stringify(JSON.parse(content), null, 2) + '\n';
+}
+function toRepoRelativePath(repositoryName, releaseFile) {
+    const prefix = `${repositoryName}/`;
+    if (releaseFile.startsWith(prefix)) {
+        return releaseFile.slice(prefix.length);
+    }
+    return releaseFile;
+}
+function formatWithCanonicalFallback(releaseFile) {
+    const raw = (0,external_fs_.readFileSync)(releaseFile, 'utf-8');
+    const formatted = canonicalJson(raw);
+    if (raw !== formatted) {
+        (0,external_fs_.writeFileSync)(releaseFile, formatted, 'utf-8');
+    }
+}
+async function formatRepoJsonFile(repositoryName, releaseFile) {
+    const formatRepoScript = external_path_default().join(repositoryName, 'format_repo.py');
+    if (!(0,external_fs_.existsSync)(formatRepoScript)) {
+        formatWithCanonicalFallback(releaseFile);
+        return;
+    }
+    const relativePath = toRepoRelativePath(repositoryName, releaseFile);
+    try {
+        await (0,exec.exec)('python3', ['format_repo.py', relativePath], { cwd: repositoryName });
+    }
+    catch (error) {
+        const message = error instanceof Error ? error.message : String(error);
+        throw Error(`Failed to format repo JSON with format_repo.py: ${message}`);
+    }
+}
+
 ;// CONCATENATED MODULE: ./src/main.ts
+
 
 
 
@@ -31400,6 +31438,7 @@ async function run() {
         if (plugin) {
             plugin.versions[releaseVersion] = release;
             (0,external_fs_.writeFileSync)(releaseFile, JSON.stringify(plugins, null, 2), 'utf-8');
+            await formatRepoJsonFile(REPOSITORY_NAME, releaseFile);
             return;
         }
         throw Error(`The plugin id:"${pluginID}" was not found in ${releaseFile}`);
