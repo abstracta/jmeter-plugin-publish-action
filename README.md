@@ -84,6 +84,9 @@ jobs:
 
 ## Notes
 
+- This action runs on the GitHub Actions Node 24 runtime. Consumers pinned to `@main` receive
+  runtime updates automatically when changes are merged.
+- Self-hosted runners must support Node 24 (macOS 13.4 or newer; ARM32 is not supported).
 - Ensure your plugin JAR and all required dependencies are correctly published in the GitHub release
   of your repository.
 - Pull request is created in a draft mode working as a stagging area for manually validation
