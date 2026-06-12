@@ -40,7 +40,7 @@ export class Arguments {
   }
 
   private getGithubToken(): string {
-    const githubToken = process.env.GITHUB_TOKEN || getInput('token')
+    const githubToken = getInput('token') || process.env.GITHUB_TOKEN
 
     if (!githubToken) {
       throw new Error(
