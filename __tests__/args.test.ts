@@ -69,9 +69,24 @@ describe('Arguments', () => {
     )
   })
 
-  it('should use GITHUB_TOKEN from environment if available', () => {
+  it('should prefer token input over GITHUB_TOKEN environment variable', () => {
     process.env.GITHUB_TOKEN = 'env-github-token'
-    ;(core.getInput as jest.Mock).mockReturnValue('dummy')
+    ;(core.getInput as jest.Mock).mockImplementation((name: string) => {
+      if (name === 'token') return 'input-github-token'
+      return 'dummy'
+    })
+
+    const args = new Arguments()
+
+    expect(args.githubToken).toBe('input-github-token')
+  })
+
+  it('should fall back to GITHUB_TOKEN when token input is empty', () => {
+    process.env.GITHUB_TOKEN = 'env-github-token'
+    ;(core.getInput as jest.Mock).mockImplementation((name: string) => {
+      if (name === 'token') return ''
+      return 'dummy'
+    })
 
     const args = new Arguments()
 
