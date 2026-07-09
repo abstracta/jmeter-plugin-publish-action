@@ -69,8 +69,9 @@ jobs:
       - name: Print Pull Request URL
         run: echo ${{ steps.publish-plugin.outputs.pull_request }}
 ```
-> [!IMPORTANT]
-> This action requires `python` in order to comply with [Undera's formatter](https://raw.githubusercontent.com/undera/jmeter-plugins/master/format_repo.py)
+
+> [!IMPORTANT] This action requires `python` in order to comply with
+> [Undera's formatter](https://raw.githubusercontent.com/undera/jmeter-plugins/master/format_repo.py)
 
 ## How It Works
 

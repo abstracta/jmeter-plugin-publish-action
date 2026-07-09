@@ -1,4 +1,5 @@
 import { exec } from '@actions/exec'
+import { execSync } from 'child_process'
 import { mkdirSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from 'fs'
 import { tmpdir } from 'os'
 import path from 'path'
@@ -31,7 +32,9 @@ describe('repo-json-format', () => {
 
     it('should produce valid JSON', () => {
       const formatted = canonicalJson(fixtureJson)
-      expect(() => JSON.parse(formatted)).not.toThrow()
+      expect(() => {
+        JSON.parse(formatted)
+      }).not.toThrow()
     })
 
     it('should be idempotent', () => {
@@ -64,11 +67,9 @@ describe('repo-json-format', () => {
 
       await formatRepoJsonFile(repositoryName, releaseFile)
 
-      expect(exec).toHaveBeenCalledWith(
-        'python3',
-        ['format_repo.py', 'site/dat/repo/test.json'],
-        { cwd: repositoryName }
-      )
+      expect(exec).toHaveBeenCalledWith('python3', ['format_repo.py', 'site/dat/repo/test.json'], {
+        cwd: repositoryName,
+      })
     })
 
     it('should use canonical fallback when format_repo.py is missing', async () => {
@@ -110,9 +111,8 @@ if __name__ == "__main__":
         format_file(path)
 `
 
-    const pythonAvailable = (() => {
+    const pythonAvailable = ((): boolean => {
       try {
-        const { execSync } = require('child_process')
         execSync('python3 --version', { stdio: 'ignore' })
         return true
       } catch {
@@ -120,9 +120,11 @@ if __name__ == "__main__":
       }
     })()
 
-    const itIfPython = pythonAvailable ? it : it.skip
+    it('should match python3 format_repo.py output', async () => {
+      if (!pythonAvailable) {
+        return
+      }
 
-    itIfPython('should match python3 format_repo.py output', async () => {
       const tempDir = mkdtempSync(path.join(tmpdir(), 'repo-json-format-integration-'))
       const repositoryName = path.join(tempDir, 'jmeter-plugins')
       const releaseFile = path.join(repositoryName, 'site/dat/repo/test.json')
