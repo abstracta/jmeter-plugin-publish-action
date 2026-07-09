@@ -44,5 +44,5 @@ outputs:
     description: 'The url of the created PR for review and draft change'
 
 runs:
-  using: node20
+  using: node24
   main: dist/index.js

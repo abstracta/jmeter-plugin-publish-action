@@ -27468,7 +27468,7 @@ class Arguments {
         return value == '' ? defaultValue : value;
     }
     getGithubToken() {
-        const githubToken = process.env.GITHUB_TOKEN || (0,core.getInput)('token');
+        const githubToken = (0,core.getInput)('token') || process.env.GITHUB_TOKEN;
         if (!githubToken) {
             throw new Error('GITHUB_TOKEN is not available. Please set it as an environment variable or provide it via the input "token".');
         }
