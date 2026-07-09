@@ -3,6 +3,7 @@ import { Arguments } from './args.js'
 import { GitService } from './git.js'
 import { GithubService } from './github.js'
 import { ReleaseBuilder } from './release-builder.js'
+import { formatRepoJsonFile } from './repo-json-format.js'
 import type { Plugin, PluginVersion } from './jmeter-plugins.d.js'
 import { writeFileSync } from 'fs'
 
@@ -52,6 +53,7 @@ export async function run(): Promise<void> {
     if (plugin) {
       plugin.versions[releaseVersion] = release
       writeFileSync(releaseFile, JSON.stringify(plugins, null, 2), 'utf-8')
+      await formatRepoJsonFile(REPOSITORY_NAME, releaseFile)
       return
     }
     throw Error(`The plugin id:"${pluginID}" was not found in ${releaseFile}`)
